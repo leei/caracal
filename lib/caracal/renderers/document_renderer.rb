@@ -312,7 +312,7 @@ module Caracal
           xml['w'].tblPr do
             xml['w'].tblStyle({ 'w:val' => 'DefaultTable' })
             xml['w'].bidiVisual({ 'w:val' => '0' })
-            xml['w'].tblW({ 'w:w'   => model.table_width.to_f, 'w:type' => 'dxa' })
+            xml['w'].tblW({ 'w:w'   => model.table_width.to_f, 'w:type' => model.table_width_type })
             xml['w'].tblInd({ 'w:w'   => '0.0', 'w:type' => 'dxa' })
             xml['w'].jc({ 'w:val' => model.table_align })
             unless borders.empty?
@@ -341,7 +341,7 @@ module Caracal
               xml['w'].tblGrid do
                 model.rows.first.each do |tc|
                   (tc.cell_colspan || 1).times do
-                    xml['w'].gridCol({ 'w:w' => tc.cell_width })
+                    xml['w'].gridCol({ 'w:w' => tc.cell_width, 'w:type' => model.cell_width_type })
                   end
                 end
               end

@@ -21,11 +21,13 @@ module Caracal
         const_set(:DEFAULT_TABLE_BORDER_COLOR,      'auto')
         const_set(:DEFAULT_TABLE_BORDER_LINE,       :single)
         const_set(:DEFAULT_TABLE_BORDER_SIZE,       0)          # units in 1/8 points
-        const_set(:DEFAULT_TABLE_BORDER_SPACING,    0)          
-        
+        const_set(:DEFAULT_TABLE_BORDER_SPACING,    0)
+        const_set(:DEFAULT_TABLE_WIDTH_TYPE,        'dxa')
+
         # accessors
         attr_reader :table_align
         attr_reader :table_width
+        attr_reader :table_width_type
         attr_reader :table_border_color
         attr_reader :table_border_line
         attr_reader :table_border_size
@@ -44,6 +46,7 @@ module Caracal
           @table_border_line    = DEFAULT_TABLE_BORDER_LINE
           @table_border_size    = DEFAULT_TABLE_BORDER_SIZE
           @table_border_spacing = DEFAULT_TABLE_BORDER_SPACING
+          @table_width_type     = DEFAULT_TABLE_WIDTH_TYPE
           
           super options, &block
         end
@@ -136,7 +139,7 @@ module Caracal
         end
         
         # strings
-        [:border_color].each do |m|
+        [:border_color, :width_type].each do |m|
           define_method "#{ m }" do |value|
             instance_variable_set("@table_#{ m }", value.to_s)
           end
@@ -193,7 +196,7 @@ module Caracal
         
         def option_keys
           k = []
-          k << [:data, :align, :width]
+          k << [:data, :align, :width, :width_type]
           k << [:border_color, :border_line, :border_size, :border_spacing]
           k << [:border_bottom, :border_left, :border_right, :border_top, :border_horizontal, :border_vertical]
           k.flatten

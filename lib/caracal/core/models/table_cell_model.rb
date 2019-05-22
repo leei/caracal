@@ -20,10 +20,12 @@ module Caracal
         const_set(:DEFAULT_CELL_BACKGROUND,       'ffffff')
         const_set(:DEFAULT_CELL_MARGINS,          Caracal::Core::Models::MarginModel.new({ top: 100, bottom: 100, left: 100, right: 100 }))
         const_set(:DEFAULT_CELL_VERTICAL_ALIGN,   :top)
+        const_set(:DEFAULT_CELL_WIDTH_TYPE,       'dxa')
 
         # accessors
         attr_reader :cell_background
         attr_reader :cell_width
+        attr_reader :cell_width_type
         attr_reader :cell_margins
         attr_reader :cell_vertical_align
         attr_reader :cell_rowspan
@@ -34,6 +36,7 @@ module Caracal
           @cell_background      = DEFAULT_CELL_BACKGROUND
           @cell_margins         = DEFAULT_CELL_MARGINS
           @cell_vertical_align  = DEFAULT_CELL_VERTICAL_ALIGN
+          @cell_width_type      = DEFAULT_CELL_WIDTH_TYPE
 
           if content = options.delete(:content)
             p content, options.dup, &block
@@ -140,7 +143,7 @@ module Caracal
         end
 
         # strings
-        [:background].each do |m|
+        [:background, :width_type].each do |m|
           define_method "#{ m }" do |value|
             instance_variable_set("@cell_#{ m }", value.to_s)
           end
@@ -166,7 +169,7 @@ module Caracal
         private
 
         def option_keys
-          [:background, :margins, :width, :vertical_align, :rowspan, :colspan]
+          [:background, :margins, :width, :width_type, :vertical_align, :rowspan, :colspan]
         end
 
       end
