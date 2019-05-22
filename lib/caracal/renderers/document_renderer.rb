@@ -337,15 +337,17 @@ module Caracal
                 xml['w'].gridCol({ 'w:w' => tc.cell_width })
               end
             end
+=begin
             xml['w'].tblGridChange({ 'w:id' => '0' }) do
               xml['w'].tblGrid do
                 model.rows.first.each do |tc|
                   (tc.cell_colspan || 1).times do
-                    xml['w'].gridCol({ 'w:w' => tc.cell_width, 'w:type' => tc.cell_width_type })
+                    xml['w'].gridCol({ 'w:w' => tc.cell_width })
                   end
                 end
               end
             end
+=end
           end
 
           rowspan_hash = {}
@@ -354,6 +356,7 @@ module Caracal
               row.each_with_index do |tc, tc_index|
                 xml['w'].tc do
                   xml['w'].tcPr do
+                    xml['w'].tcW({ 'w:w' => tc.cell_width, 'w:type' => 'dxa' })
                     xml['w'].shd({ 'w:fill' => tc.cell_background })
                     xml['w'].vAlign({ 'w:val' => tc.cell_vertical_align })
 
