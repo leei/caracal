@@ -341,7 +341,7 @@ module Caracal
               xml['w'].tblGrid do
                 model.rows.first.each do |tc|
                   (tc.cell_colspan || 1).times do
-                    xml['w'].gridCol({ 'w:w' => tc.cell_width, 'w:type' => model.cell_width_type })
+                    xml['w'].gridCol({ 'w:w' => tc.cell_width, 'w:type' => tc.cell_width_type })
                   end
                 end
               end
