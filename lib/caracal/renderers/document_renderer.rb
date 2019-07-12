@@ -332,17 +332,15 @@ module Caracal
             xml['w'].tblLook({ 'w:val'  => '0600'  })
           end
           xml['w'].tblGrid do
-            model.rows.first.each do |tc|
-              (tc.cell_colspan || 1).times do
-                xml['w'].gridCol({ 'w:w' => tc.cell_width })
-              end
+            col_widths = model.finish_cell_widths
+            col_widths.each do |col_width|
+              xml['w'].gridCol({ 'w:w' => col_width })
             end
+
             xml['w'].tblGridChange({ 'w:id' => '0' }) do
               xml['w'].tblGrid do
-                model.rows.first.each do |tc|
-                  (tc.cell_colspan || 1).times do
-                    xml['w'].gridCol({ 'w:w' => tc.cell_width })
-                  end
+                col_widths.each do |col_width|
+                  xml['w'].gridCol({ 'w:w' => col_width })
                 end
               end
             end

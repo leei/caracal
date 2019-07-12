@@ -81,7 +81,7 @@ module Caracal
         #
         def calculate_width(container_width)
           width(container_width) unless table_width.to_i > 0
-          
+
           cells.each { |c| c.calculate_width(default_cell_width) }
         end
         
@@ -170,8 +170,14 @@ module Caracal
             raise Caracal::Errors::InvalidTableDataError, 'Table data must be a two-dimensional array.'
           end
         end        
-        
-        
+
+        def finish_cell_widths
+          widths = cell_widths
+          cell_widths.map do |width|
+            width == 0 ? default_cell_width : width
+          end
+        end
+
         #=============== VALIDATION ==============================
         
         def valid?
@@ -185,12 +191,44 @@ module Caracal
         private
         
         def default_cell_width
-          cell_widths     = rows.first.map { |c| c.cell_width.to_i }
+          return @default_cell_width if defined? @default_cell_width
+          widths = cell_widths
+          #cell_widths     = rows.first.map { |c| c.cell_width.to_i }
           remaining_width = table_width - cell_widths.reduce(&:+).to_i
           remaining_cols  = cols.size - cell_widths.reject { |w| w == 0 }.size
           default_width   = (remaining_cols == 0) ? 0 : (remaining_width / remaining_cols)
+          @default_cell_width = default_width
         end
-        
+
+        def cell_widths
+          return @cell_widths if defined? @cell_widths
+          col_widths = []
+          resolve_nils = false
+          rows.first.each do |tc|
+            if tc.cell_colspan && tc.cell_colspan > 1
+              tc.cell_colspan.times do
+                col_widths.push(nil)
+                resolve_nils = true
+              end
+            else
+              col_widths.push(tc.cell_width)
+            end
+          end
+          rows[1..-1].each do |row|
+            resolve_nils = false
+            i = 0
+            row.each_with_index do |tc|
+              if col_widths[i].nil? && (tc.cell_colspan.nil? || tc.cell_colspan == 1)
+                col_widths[i] = tc.cell_width
+              end
+              resolve_nils ||= col_widths[i].nil?
+              i += (tc.cell_colspan || 1)
+            end
+            break unless resolve_nils
+          end if resolve_nils
+          @cell_widths = col_widths.map(&:to_i)
+        end
+
         def option_keys
           k = []
           k << [:data, :align, :width]
